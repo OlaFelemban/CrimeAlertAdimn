@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "466060061809",
+    "firebase_url": "https://locationproj-a7036.firebaseio.com",
+    "project_id": "locationproj-a7036",
+    "storage_bucket": "locationproj-a7036.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:466060061809:android:fac332635f29546e",
+        "android_client_info": {
+          "package_name": "com.example.ola.crimealertadmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "466060061809-2l8fpm6l4u75c9jg9qkogeug146e42mr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVkk8mG_edYw9gdgyrQQ3osUvOwct_h0E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
