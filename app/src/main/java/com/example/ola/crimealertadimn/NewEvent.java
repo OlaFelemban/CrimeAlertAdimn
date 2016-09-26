@@ -13,6 +13,8 @@ public class NewEvent {
     private String Details;
     private String City;
     private double LocationLat;
+
+
     private double LocationLon;
 
     public NewEvent() {
@@ -57,5 +59,16 @@ public class NewEvent {
 
     public void setLocationLon(double locationLon) {
         LocationLon = locationLon;
+    }
+
+    @Override
+    public String toString() {
+        return "NewEvent{" +
+                "ALert='" + ALert + '\'' +
+                ", Details='" + Details + '\'' +
+                ", City='" + City + '\'' +
+                ", LocationLat=" + LocationLat +
+                ", LocationLon=" + LocationLon +
+                '}';
     }
 }
