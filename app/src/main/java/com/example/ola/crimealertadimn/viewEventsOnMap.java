@@ -1,6 +1,5 @@
 package com.example.ola.crimealertadimn;
 
-import android.*;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +13,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,24 +38,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.Manifest.permission.READ_CONTACTS;
+
 public class viewEventsOnMap extends FragmentActivity implements OnMapReadyCallback {
 
+
     private GoogleMap mMap;
-    private static final String TAG="viewEventsOnMap";
+    private static final String TAG = "viewEventsOnMap";
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     private DatabaseReference EventRef = mRootRef.child("Events");
-    private List<NewEvent> eventList= new ArrayList<NewEvent>();
+    private List<NewEvent> eventList = new ArrayList<NewEvent>();
 
+    private Button btnPrev;
     private LocationManager locationManager;
     private String provider;// Location provider
-    private Location location =  null;
+    private Location location = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
 
         //API_KEY
         // AIzaSyB1xoVID79Fvjqi5H_rTapJ_SCFk1tQ9Sk
@@ -63,23 +65,34 @@ public class viewEventsOnMap extends FragmentActivity implements OnMapReadyCallb
         Log.d(TAG, "onCreat Started");
 
         setContentView(R.layout.activity_view_events_on_map);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-         mapFragment.getMapAsync(this);
+        //SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().getFragments();
+
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+
+        //.findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
         firebaseAuth = FirebaseAuth.getInstance();
 
 
-        if(firebaseAuth.getCurrentUser()==null){
+        if (firebaseAuth.getCurrentUser() == null) {
             finish();
             startActivity(new Intent(this, LoginActivity.class));
         }
         FirebaseUser user = firebaseAuth.getCurrentUser();
-        Log.d(TAG,"firebase user"+ user.getEmail());
+        Log.d(TAG, "firebase user" + user.getEmail());
 
-
-
+        btnPrev = (Button) findViewById(R.id.btn_prev);
+        btnPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+            }
+        });
 
     }
 
@@ -98,7 +111,7 @@ public class viewEventsOnMap extends FragmentActivity implements OnMapReadyCallb
         mMap = googleMap;
 
 
-
+        mMap.getUiSettings().setZoomControlsEnabled(true);
 
         mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
@@ -109,7 +122,6 @@ public class viewEventsOnMap extends FragmentActivity implements OnMapReadyCallb
                 View v = getLayoutInflater().inflate(R.layout.info_window_layout, null);
 
 
-
                 // Getting reference to the TextView to set latitude
                 TextView tvAlertEvent = (TextView) v.findViewById(R.id.tv_alert_event);
 
@@ -118,21 +130,21 @@ public class viewEventsOnMap extends FragmentActivity implements OnMapReadyCallb
 
                 TextView tvDescription = (TextView) v.findViewById(R.id.tv_description);
 
-                Log.d(TAG, "arg0.getPosition():"+arg0.getPosition().toString());
-                Log.d(TAG, "Location"+new LatLng(location.getLatitude(),location.getLongitude()).toString());
+                Log.d(TAG, "arg0.getPosition():" + arg0.getPosition().toString());
+                Log.d(TAG, "Location" + new LatLng(location.getLatitude(), location.getLongitude()).toString());
 
-                double distance =  getDistance(arg0.getPosition(),new LatLng(location.getLatitude(),location.getLongitude()));
-                Log.d(TAG, "distance"+distance);
+                double distance = getDistance(arg0.getPosition(), new LatLng(location.getLatitude(), location.getLongitude()));
+                Log.d(TAG, "distance" + distance);
 
-               if(distance<10){
-                   v.setBackgroundColor(Color.parseColor("#FF0000"));
-                }else if(distance<50){
-                   v.setBackgroundColor(Color.parseColor("#F7F709"));
-               }else if(distance<100){
-                   v.setBackgroundColor(Color.parseColor("#33CC52"));
-               }else{
-                   v.setBackgroundColor(Color.parseColor("#FFFFFF"));
-               }
+                if (distance < 10) {
+                    v.setBackgroundColor(Color.parseColor("#FF0000"));
+                } else if (distance < 50) {
+                    v.setBackgroundColor(Color.parseColor("#F7F709"));
+                } else if (distance < 100) {
+                    v.setBackgroundColor(Color.parseColor("#33CC52"));
+                } else {
+                    v.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                }
 
                 String str = arg0.getSnippet();
                 String[] strList = str.split("\\|");
@@ -159,10 +171,10 @@ public class viewEventsOnMap extends FragmentActivity implements OnMapReadyCallb
         //call request permission alert
 
         int tmp = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
-        Log.d(TAG, "C)"+tmp);
+        Log.d(TAG, "C)" + tmp);
 
 
-        if (permissionCheck(android.Manifest.permission.ACCESS_FINE_LOCATION ,
+        if (permissionCheck(android.Manifest.permission.ACCESS_FINE_LOCATION,
                 MY_PERMISSIONS_REQUEST_READ_CONTACTS)) {
             Log.d(TAG, "Location permission granted");
 
@@ -199,18 +211,18 @@ public class viewEventsOnMap extends FragmentActivity implements OnMapReadyCallb
             return;
         }
 
-        try{
+        try {
             int tmp = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
-            Log.d(TAG, "C)"+tmp);
+            Log.d(TAG, "C)" + tmp);
 
             location = locationManager.getLastKnownLocation(provider);
 
-        }catch(Exception e){
-            Log.w(TAG, "e)"+e);
+        } catch (Exception e) {
+            Log.w(TAG, "e)" + e);
         }
 
         if (location != null) {
-            Log.d(TAG, "Android location:"+location.toString());
+            Log.d(TAG, "Android location:" + location.toString());
         } else {
             Log.d(TAG, "Android location not avaliable:");
         }
@@ -220,14 +232,17 @@ public class viewEventsOnMap extends FragmentActivity implements OnMapReadyCallb
             public void onStatusChanged(String provider, int status, Bundle extras) {
                 // TODO Auto-generated method stub
             }
+
             @Override
             public void onProviderEnabled(String provider) {
                 // TODO Auto-generated method stub
             }
+
             @Override
             public void onProviderDisabled(String provider) {
                 // TODO Auto-generated method stub
             }
+
             @Override
             public void onLocationChanged(Location location) {
                 //TODO I have No Idea What Should I do
@@ -245,18 +260,19 @@ public class viewEventsOnMap extends FragmentActivity implements OnMapReadyCallb
         Log.d(TAG, "addMarkers Started");
 
         // muncie 40.204,-85.408
-        LatLng camPosition = new LatLng(location.getLatitude(),location.getLongitude());
-        for(NewEvent event:eventList){
-            Log.d(TAG, "Event:"+event.toString());
-           //
-           mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(event.getLocationLat(),event.getLocationLon()))
+        LatLng camPosition = new LatLng(location.getLatitude(), location.getLongitude());
+        for (NewEvent event : eventList) {
+            Log.d(TAG, "Event:" + event.toString());
+            //
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(event.getLocationLat(), event.getLocationLon()))
                     .title(event.getALert())
-                    .snippet(event.getALert()+"|City: "+event.getCity()+"|Description: "+event.getDetails()));
+                    .snippet(event.getALert() + "|City: " + event.getCity() + "|Description: " + event.getDetails()));
         }
         mMap.moveCamera(CameraUpdateFactory.newLatLng(camPosition));
 
     }
+
     private void retrieveData() {
         //read alert from firebase
         Log.d(TAG, "retrieveData started");
@@ -265,23 +281,25 @@ public class viewEventsOnMap extends FragmentActivity implements OnMapReadyCallb
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Get Post object and use the values to update the UI
                 Map eventMap = new HashMap<String, NewEvent>();
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    GenericTypeIndicator<HashMap<String, NewEvent>> t = new GenericTypeIndicator<HashMap<String,NewEvent>>() {};
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    GenericTypeIndicator<HashMap<String, NewEvent>> t = new GenericTypeIndicator<HashMap<String, NewEvent>>() {
+                    };
                     eventMap = postSnapshot.getValue(t);
-                    Log.d(TAG, "eventMap"+eventMap.toString());
-                    for ( Object event : eventMap.values()) {
-                       eventList.add((NewEvent) event);
+                    Log.d(TAG, "eventMap" + eventMap.toString());
+                    for (Object event : eventMap.values()) {
+                        eventList.add((NewEvent) event);
 
                     }
-                    Log.d(TAG, "eventList"+eventList.toString());
+                    Log.d(TAG, "eventList" + eventList.toString());
                     addMarkers(eventList);
                 }
             }
-/*
-                NewEvent event = dataSnapshot.getValue(NewEvent.class);
 
-                eventList.add(event);
- */
+            /*
+                            NewEvent event = dataSnapshot.getValue(NewEvent.class);
+
+                            eventList.add(event);
+             */
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // Getting Post failed, log a message
@@ -296,35 +314,38 @@ public class viewEventsOnMap extends FragmentActivity implements OnMapReadyCallb
 
     /**
      * Check permission/request premission
+     *
      * @param permission to be checked
-     * @param reqCode of permision
+     * @param reqCode    of permision
      * @return permission status
      */
-    public boolean permissionCheck(String permission, int reqCode){
-        Log.d(TAG, "permission: "+permission);
-        Log.d(TAG, "reqCode: "+reqCode);
+    public boolean permissionCheck(String permission, int reqCode) {
+        Log.d(TAG, "permission: " + permission);
+        Log.d(TAG, "reqCode: " + reqCode);
 
         boolean flag = false;
         int permissionCheck = ContextCompat.checkSelfPermission(this,
                 permission);
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
             return true;
-        }else {
+        } else {
             return requestPermission(permission, reqCode);
         }
     }
+
     /**
      * request premission
+     *
      * @param permission to be checked
-     * @param reqCode of permision
+     * @param reqCode    of permision
      * @return permission status
      */
     private boolean requestPermission(String permission, int reqCode) {
-        ActivityCompat.requestPermissions( this,new String[] {
-                        permission },
+        ActivityCompat.requestPermissions(this, new String[]{
+                        permission},
                 reqCode);
 
-        return ContextCompat.checkSelfPermission(this,permission)==0;
+        return ContextCompat.checkSelfPermission(this, permission) == 0;
     }
 
     @Override
@@ -341,18 +362,18 @@ public class viewEventsOnMap extends FragmentActivity implements OnMapReadyCallb
         }*/
     }
 
-    public double getDistance(LatLng start,LatLng end){
-        double lat1 = (Math.PI/180)*start.latitude;
-        double lat2 = (Math.PI/180)*end.latitude;
+    public double getDistance(LatLng start, LatLng end) {
+        double lat1 = (Math.PI / 180) * start.latitude;
+        double lat2 = (Math.PI / 180) * end.latitude;
 
-        double lon1 = (Math.PI/180)*start.longitude;
-        double lon2 = (Math.PI/180)*end.longitude;
+        double lon1 = (Math.PI / 180) * start.longitude;
+        double lon2 = (Math.PI / 180) * end.longitude;
 
         //地球半径
         double R = 6371;
 
         //两点间距离 km，如果想要米的话，结果*1000就可以了
-        double d =  Math.acos(Math.sin(lat1)*Math.sin(lat2)+Math.cos(lat1)*Math.cos(lat2)*Math.cos(lon2-lon1))*R;
+        double d = Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1)) * R;
 
         return d;
     }

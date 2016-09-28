@@ -64,9 +64,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
         }
         if (view == viewEventsBtn){
-
-            finish();
             startActivity(new Intent(this,viewEventsOnMap.class));
+            finish();
         }
 
     }
