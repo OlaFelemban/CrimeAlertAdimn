@@ -33,7 +33,7 @@ public class eventInput extends AppCompatActivity implements View.OnClickListene
     //add reference to database to connect to database
     DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     DatabaseReference EventRef = mRootRef.child("Events");
-   // DatabaseReference mAlertRef = mRootRef.child("Alert");
+    // DatabaseReference mAlertRef = mRootRef.child("Alert");
     //DatabaseReference mDetailsRef = mRootRef.child("Details");
 
 
@@ -43,10 +43,10 @@ public class eventInput extends AppCompatActivity implements View.OnClickListene
         setContentView(R.layout.activity_event_input);
 
 
-
         //Get UI elements
         Alert = (EditText) findViewById(R.id.editTextAlert);
         Details = (EditText) findViewById(R.id.editTextDetails);
+
         buttonSave = (Button) findViewById(R.id.buttonSave);
         LocationLon = (EditText) findViewById(R.id.editTextLon);
         LocationLat = (EditText) findViewById(R.id.editTextLat);
@@ -54,12 +54,20 @@ public class eventInput extends AppCompatActivity implements View.OnClickListene
         buttonloc = (Button) findViewById(R.id.buttonloc);
 
 
+
+        Intent intent = getIntent();
+        LocationLat.setText(intent.getStringExtra("Lat"));
+        LocationLon.setText(intent.getStringExtra("Lon"));
+        Alert.setText(intent.getStringExtra("Alert"));
+        city.setText(intent.getStringExtra("City"));
+        Details.setText( intent.getStringExtra("Details"));
+
         buttonSave.setOnClickListener(this);
         buttonloc.setOnClickListener(this);
     }
 
 
-    protected  void onStart(){
+    protected void onStart() {
         super.onStart();
 
         EventRef.addValueEventListener(new ValueEventListener() {
@@ -78,20 +86,16 @@ public class eventInput extends AppCompatActivity implements View.OnClickListene
     }
 
 
-
-
-
-
     @Override
     public void onClick(View v) {
-        if(v==buttonSave) {
+        if (v == buttonSave) {
             String AText = Alert.getText().toString().trim();
             String DText = Details.getText().toString().trim();
             String CText = city.getText().toString().trim();
             double LocLat = Double.parseDouble(LocationLat.getText().toString());
             double LocLon = Double.parseDouble(LocationLon.getText().toString());
 
-//create new object to push into database
+            //create new object to push into database
             NewEvent newEvent = new NewEvent();
             newEvent.setALert(AText);
             newEvent.setDetails(DText);
@@ -99,34 +103,30 @@ public class eventInput extends AppCompatActivity implements View.OnClickListene
             newEvent.setLocationLat(LocLat);
             newEvent.setLocationLon(LocLon);
 
-// added to database
+            // added to database
             EventRef.child("Events").push().setValue(newEvent);
 
 
             finish();
             startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
 
-           // Alert.getText().clear();
+            // Alert.getText().clear();
             //Details.getText().clear();
-
-
         }
 
-        if(v == buttonloc){
-            //finish();
-            //startActivity();
-            // go to map view page
+        if (v == buttonloc) {
+            finish();
+            Intent intent = new Intent(getApplicationContext(), SelectLocationOnMapActivity.class);
+            intent.putExtra("Lat", LocationLat.getText().toString());
+            intent.putExtra("Lon", LocationLon.getText().toString());
+            intent.putExtra("Alert", Alert.getText().toString());
+            intent.putExtra("City", city.getText().toString());
+            intent.putExtra("Details", Details.getText().toString());
+
+            startActivity(intent);
         }
 
     }
-
-
-
-
-
-
-
-
 
 
 }

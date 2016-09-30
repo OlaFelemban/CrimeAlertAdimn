@@ -137,12 +137,17 @@ public class viewEventsOnMap extends FragmentActivity implements OnMapReadyCallb
                 Log.d(TAG, "distance" + distance);
 
                 if (distance < 10) {
+                    Log.d(TAG, "Background RED");
+
                     v.setBackgroundColor(Color.parseColor("#FF0000"));
                 } else if (distance < 50) {
+                    Log.d(TAG, "Background Yellow");
                     v.setBackgroundColor(Color.parseColor("#F7F709"));
                 } else if (distance < 100) {
+                    Log.d(TAG, "Background Green");
                     v.setBackgroundColor(Color.parseColor("#33CC52"));
                 } else {
+                    Log.d(TAG, "Background white");
                     v.setBackgroundColor(Color.parseColor("#FFFFFF"));
                 }
 
@@ -196,7 +201,6 @@ public class viewEventsOnMap extends FragmentActivity implements OnMapReadyCallb
     private void initLocationListener() {
 // 获得LocationManager的实例
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
         // 获取所有可用的位置提供器
         List<String> providerList = locationManager.getProviders(true);
         if (providerList.contains(LocationManager.GPS_PROVIDER)) {
@@ -211,7 +215,10 @@ public class viewEventsOnMap extends FragmentActivity implements OnMapReadyCallb
             return;
         }
 
+
+
         try {
+
             int tmp = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
             Log.d(TAG, "C)" + tmp);
 
@@ -244,13 +251,20 @@ public class viewEventsOnMap extends FragmentActivity implements OnMapReadyCallb
             }
 
             @Override
-            public void onLocationChanged(Location location) {
-                //TODO I have No Idea What Should I do
+            public void onLocationChanged(Location loc) {
+               Log.d(TAG,"LocationChanged to "+location.toString());
+                // On Change, clear markers and reload
+                location = loc;
+                mMap.clear();
+                Log.d(TAG,"map.clear");
+                //read data from Firebase
+                retrieveData();
+
             }
         };
 
         // 更新当前位置
-        locationManager.requestLocationUpdates(provider, 10 * 1000, 1,
+        locationManager.requestLocationUpdates(provider, 1 * 1000, 1,
                 locationListener);
 
 
@@ -274,6 +288,7 @@ public class viewEventsOnMap extends FragmentActivity implements OnMapReadyCallb
     }
 
     private void retrieveData() {
+        eventList =  new ArrayList<NewEvent>();
         //read alert from firebase
         Log.d(TAG, "retrieveData started");
         ValueEventListener postListener = new ValueEventListener() {
@@ -369,10 +384,10 @@ public class viewEventsOnMap extends FragmentActivity implements OnMapReadyCallb
         double lon1 = (Math.PI / 180) * start.longitude;
         double lon2 = (Math.PI / 180) * end.longitude;
 
-        //地球半径
+        //R of earth
         double R = 6371;
 
-        //两点间距离 km，如果想要米的话，结果*1000就可以了
+        //distance in Kilometer
         double d = Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1)) * R;
 
         return d;
