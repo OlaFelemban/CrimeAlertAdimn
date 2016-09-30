@@ -27,7 +27,7 @@ public class SelectLocationOnMapActivity extends FragmentActivity implements OnM
     private static final String TAG = "SelectLocationOnMap";
 
     private GoogleMap mMap;
-    private String Lat, Lon, Alert, City, Details = null;
+    private String Lat, Lon, Alert, City, Details, Address = null;
     private Button btnSelectLocation;
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
 
@@ -57,6 +57,7 @@ public class SelectLocationOnMapActivity extends FragmentActivity implements OnM
                 intent.putExtra("Alert", Alert);
                 intent.putExtra("City", City);
                 intent.putExtra("Details", Details);
+                intent.putExtra("Address", Address);
 
                 startActivity(intent);
             }
@@ -69,8 +70,9 @@ public class SelectLocationOnMapActivity extends FragmentActivity implements OnM
         Alert = intent.getStringExtra("Alert");
         City = intent.getStringExtra("City");
         Details = intent.getStringExtra("Details");
+        Address = intent.getStringExtra("Address");
 
-        Log.d(TAG, "passed massages" + Lat + " " + Lon + " " + Alert + " " + City + " " + Details);
+        Log.d(TAG, "passed massages" + Lat + " " + Lon + " " + Alert + " " + City + " " + Details+" "+Address);
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
     }
@@ -111,8 +113,9 @@ public class SelectLocationOnMapActivity extends FragmentActivity implements OnM
             return;
         }
 
-        LatLng inputLocation = new LatLng(Double.parseDouble(Lat), Double.parseDouble(Lat));
-        mMap.addMarker(new MarkerOptions().position(inputLocation).title("Location"));
+        LatLng inputLocation = new LatLng(Double.parseDouble(Lat), Double.parseDouble(Lon));
+        Log.d("added Marker Location",Lat+"  "+Lon);
+        mMap.addMarker(new MarkerOptions().position(inputLocation).title(Address));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(inputLocation));
 
 

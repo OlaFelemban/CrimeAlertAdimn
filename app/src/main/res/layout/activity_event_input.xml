@@ -16,8 +16,9 @@
         android:inputType="text"
         android:ems="10"
         android:id="@+id/editTextAlert"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/editAdress"
+        android:layout_alignStart="@+id/editAdress" />
 
     <Button
         android:text="Check Location on map"
@@ -55,30 +56,28 @@
         android:ems="10"
         android:id="@+id/editTextCity"
         android:layout_alignBottom="@+id/textViewCity"
-        android:layout_alignLeft="@+id/editTextLat"
-        android:layout_alignStart="@+id/editTextLat" />
+        android:layout_alignRight="@+id/buttonSave"
+        android:layout_alignEnd="@+id/buttonSave" />
 
-    <EditText
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="number|numberSigned|numberDecimal"
         android:ems="10"
         android:id="@+id/editTextLon"
-        android:layout_marginTop="38dp"
-        android:layout_below="@+id/editTextAlert"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_above="@+id/editTextCity"
+        android:layout_alignLeft="@+id/editTextCity"
+        android:layout_alignStart="@+id/editTextCity" />
 
-    <EditText
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="number|numberSigned|numberDecimal"
         android:ems="10"
         android:id="@+id/editTextLat"
-        android:layout_marginTop="41dp"
-        android:layout_below="@+id/editTextLon"
-        android:layout_alignLeft="@+id/editTextLon"
-        android:layout_alignStart="@+id/editTextLon" />
+        android:layout_alignTop="@+id/textViewLat"
+        android:layout_alignLeft="@+id/editAdress"
+        android:layout_alignStart="@+id/editAdress" />
 
     <TextView
         android:text="Alert"
@@ -94,21 +93,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textViewLon"
-        android:layout_alignBottom="@+id/editTextLon"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/editTextCity" />
 
     <TextView
         android:text="Latitude"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textViewLat"
-        android:layout_alignTop="@+id/editTextLat"
-        android:layout_alignBottom="@+id/editTextLat"
-        android:layout_alignRight="@+id/textViewLon"
-        android:layout_alignEnd="@+id/textViewLon"
+        android:layout_below="@+id/tvAddress"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="52dp" />
 
     <TextView
         android:text="City"
@@ -128,4 +125,27 @@
         android:layout_alignBottom="@+id/editTextDetails"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <TextView
+        android:text="address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvAddress"
+        android:layout_below="@+id/textViewAlert"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="42dp" />
+
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:ems="10"
+        android:id="@+id/editAdress"
+        android:layout_alignBottom="@+id/tvAddress"
+        android:layout_alignLeft="@+id/editTextCity"
+        android:layout_alignStart="@+id/editTextCity" />
+
+
 </RelativeLayout>
